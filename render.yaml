@@ -1,6 +1,7 @@
 services:
+  # Backend API Service
   - type: web
-    name: rest-express-app
+    name: gurgaon-sites
     env: node
     plan: free
     buildCommand: npm install && npm run build
@@ -10,14 +11,26 @@ services:
         value: production
       - key: DATABASE_URL
         fromDatabase:
-          name: rest-express-db
+          name: gurgaon-db
           property: connectionString
       - key: SESSION_SECRET
         generateValue: true
     healthCheckPath: /api/health
 
+  # Frontend Service (if needed as separate service)
+  - type: web
+    name: gurgaon-flats
+    env: static
+    plan: free
+    buildCommand: npm install && npm run build
+    staticPublishPath: ./dist
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
+
 databases:
-  - name: rest-express-db
-    databaseName: restexpress
-    user: restexpress
+  - name: gurgaon-db
+    databaseName: gurgaon
+    user: gurgaon
     plan: free
